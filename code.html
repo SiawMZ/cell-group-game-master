@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cell Group Game Master</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background: #f4f7f6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .display-area {
+            font-size: 2rem;
+            font-weight: bold;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #bdc3c7;
+            margin: 10px 0 20px 0;
+            border-radius: 10px;
+            padding: 10px;
+            color: #e67e22;
+        }
+
+        .instruction-area {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-top: 15px;
+            font-weight: 600;
+            background: #ecf0f1;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            min-height: 1.5rem;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+            margin: 5px;
+        }
+
+        .btn-next {
+            background: #27ae60;
+            color: white;
+            width: 100%;
+            font-size: 1.2rem;
+        }
+
+        .btn-next:hover {
+            background: #2ecc71;
+        }
+
+        .btn-reset {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .add-section {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        input {
+            padding: 10px;
+            width: 70%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .stats {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+
+        .tab-btn {
+            background: #34495e;
+            color: white;
+            opacity: 0.6;
+        }
+
+        .tab-btn.active {
+            opacity: 1;
+            background: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="tabs">
+            <button class="tab-btn active" onclick="switchGame(this, 'charades')">Charades</button>
+            <button class="tab-btn" onclick="switchGame(this, 'humming')">Humming</button>
+            <button class="tab-btn" onclick="switchGame(this, 'photos')">Photo Hunt</button>
+        </div>
+
+        <h1 id="game-title">Charades</h1>
+        <div class="instruction-area" id="instruction-display">Click Next to Start</div>
+        <div class="display-area" id="question-display">Ready?</div>
+
+        <button class="btn-next" onclick="nextQuestion()">Next Question ➔</button>
+
+        <div class="stats" id="stats">Remaining: 0 | Used: 0</div>
+        <button class="btn-reset" onclick="resetGame()">Reset / Shuffle All</button>
+
+        <div class="add-section">
+            <input type="text" id="new-q-input" placeholder="Add your own question...">
+            <button style="background:#34495e; color:white;" onclick="addNewQuestion()">Add</button>
+        </div>
+    </div>
+
+    <script src="questions.js"></script>
+    <script>
+        let games = {
+            charades: charadesBank,
+            humming: hummingBank,
+            photos: photoBank
+        };
+
+        let currentGame = 'charades';
+        let unused = [...games[currentGame]];
+        let used = [];
+
+        function switchGame(element, type) {
+            currentGame = type;
+            // Update Title Display
+            const titles = { charades: 'Charades', humming: 'Humming', photos: 'Photo Hunt' };
+            document.getElementById('game-title').innerText = titles[type];
+
+            // Update Tabs UI
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+
+            resetGame();
+        }
+
+        function nextQuestion() {
+            if (unused.length === 0) {
+                document.getElementById('question-display').innerText = "🎉 No more questions!";
+                document.getElementById('instruction-display').innerText = "";
+                return;
+            }
+            const index = Math.floor(Math.random() * unused.length);
+            const item = unused.splice(index, 1)[0];
+            used.push(item);
+
+            // Handle Object vs String
+            const questionText = typeof item === 'object' ? item.q : item;
+            let instructionText = typeof item === 'object' ? item.i : '';
+
+            // Default Instructions if none provided
+            if (!instructionText) {
+                const defaults = { charades: '讲话', humming: '哼歌', photos: '找照片' };
+                instructionText = defaults[currentGame] || '';
+            }
+
+            document.getElementById('question-display').innerText = questionText;
+            document.getElementById('instruction-display').innerText = instructionText;
+
+            updateStats();
+        }
+
+        function addNewQuestion() {
+            const input = document.getElementById('new-q-input');
+            if (input.value.trim() !== "") {
+                unused.push(input.value.trim());
+                input.value = "";
+                updateStats();
+                alert("Added!");
+            }
+        }
+
+        function resetGame() {
+            unused = [...games[currentGame]];
+            used = [];
+            document.getElementById('question-display').innerText = "List Shuffled!";
+            document.getElementById('instruction-display').innerText = "Click Next to Start";
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('stats').innerText = `Remaining: ${unused.length} | Used: ${used.length}`;
+        }
+
+        updateStats();
+    </script>
+
+</body>
+
+</html>
