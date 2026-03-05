@@ -116,7 +116,9 @@
     <div class="container">
         <div id="tabs">
             <button class="tab-btn active" onclick="switchGame(this, 'charades')">Charades</button>
+            <button class="tab-btn" onclick="switchGame(this, 'charadesFinal')">Charades (Final)</button>
             <button class="tab-btn" onclick="switchGame(this, 'humming')">Humming</button>
+            <button class="tab-btn" onclick="switchGame(this, 'hummingFinal')">Humming (Final)</button>
             <button class="tab-btn" onclick="switchGame(this, 'photos')">Photo Hunt</button>
         </div>
 
@@ -139,7 +141,9 @@
     <script>
         let games = {
             charades: charadesBank,
+            charadesFinal: charadesFinalBank,
             humming: hummingBank,
+            hummingFinal: hummingFinalBank,
             photos: photoBank
         };
 
@@ -150,7 +154,7 @@
         function switchGame(element, type) {
             currentGame = type;
             // Update Title Display
-            const titles = { charades: 'Charades', humming: 'Humming', photos: 'Photo Hunt' };
+            const titles = { charades: 'Charades', charadesFinal: 'Charades (Final)', humming: 'Humming', hummingFinal: 'Humming (Final)', photos: 'Photo Hunt' };
             document.getElementById('game-title').innerText = titles[type];
 
             // Update Tabs UI
@@ -176,7 +180,7 @@
 
             // Default Instructions if none provided
             if (!instructionText) {
-                const defaults = { charades: '讲话', humming: '哼歌', photos: '找照片' };
+                const defaults = { charades: '讲话', charadesFinal: '讲话', humming: '哼歌', hummingFinal: '哼歌', photos: '找照片' };
                 instructionText = defaults[currentGame] || '';
             }
 
