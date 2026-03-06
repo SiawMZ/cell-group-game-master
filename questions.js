@@ -83,6 +83,9 @@ const photoBank = [
     "书",
     "burger/fastfood",
     "炸鸡",
+    "圣诞节",
+    "礼物",
+    "神山",
 
 ];
 
@@ -127,7 +130,7 @@ const hummingFinalBank = [
     "Under the sea",
     "Hakuna Matata",
     "You'll Be in My Heart",
-    "Humming Final 8",
+    "赞美之泉",
     "Humming Final 9",
     "Humming Final 10",
     "Humming Final 11",
