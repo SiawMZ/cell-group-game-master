@@ -59,7 +59,7 @@ const hummingBank = [
     "恩典之路",
     "Payphone",
     "Let It Go",
-    "Horseh",
+    "听妈妈的话",
     "有一种悲伤",
     "修炼爱情",
 ];
